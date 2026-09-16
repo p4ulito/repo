@@ -4,4 +4,7 @@ renzAge <- 20
 addAge = tylherAge + renzAge
 addAge
 
-install.packages("usethis")
+mulAge = tylherAge * renzAge
+mulAge
+
+
