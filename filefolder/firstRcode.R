@@ -7,4 +7,5 @@ addAge
 mulAge = tylherAge * renzAge
 mulAge
 
-
+subAge = tylherAge - renzAge
+subAge
