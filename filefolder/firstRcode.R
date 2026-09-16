@@ -9,3 +9,6 @@ mulAge
 
 subAge = tylherAge - renzAge
 subAge
+
+divAge = tylherAge / renzAge
+divAge
