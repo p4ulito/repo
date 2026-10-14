@@ -1,5 +1,5 @@
 ---
-  title: "RExercise#2"
+title: "RExercise#2"
 author: "Paul"
 date: "2026-10-14"
 output: html_document
