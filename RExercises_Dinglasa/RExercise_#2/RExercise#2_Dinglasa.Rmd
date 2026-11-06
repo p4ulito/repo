@@ -5,7 +5,7 @@ date: "2026-10-14"
 output: html_document
 ---
   
-  ```{r setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ### PART A - Arithmetic Operations
@@ -187,7 +187,7 @@ paste0(full_name, " is ", age, " years old.")
 
 
 ### Part E — Critical Thinking Challenge
-```{r}
+```{r, error=TRUE}
 # TODO: Predict, then test: what is the result of "5" + 5 in R?
 # Run it and read the error message carefully.
 "5" + 5
