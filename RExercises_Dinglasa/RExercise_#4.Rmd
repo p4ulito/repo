@@ -1,0 +1,172 @@
+---
+title: "RExercise#4_Dinglasa"
+author: "Paul Christian S. Dinglasa"
+date: "2026-11-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###R Lab: Data Structures - Vectors and Lists
+
+###Part A — Creating Vectors and List:
+
+# Question #1:
+```{r}
+# A factory has a census of its workers. There are 50 workers in total. The following list shows their ages: 34, 28, 22, 36, 27, 18, 52, 39, 42, 29, 35, 31, 27, 22, 37, 34, 19, 20, 57, 49, 50, 37, 46, 25, 17, 37, 43, 53, 41, 51, 35, 24, 33, 41, 53, 40, 18, 44, 38, 41, 48, 27, 39, 19, 30, 61, 54, 58, 26, 18.
+
+# a. Create a vector for the worker's age.
+
+ages <- c(34, 28, 22, 36, 27, 18, 52, 39, 42, 29,
+          35, 31, 27, 22, 37, 34, 19, 20, 57, 49,
+          50, 37, 46, 25, 17, 37, 43, 53, 41, 51,
+          35, 24, 33, 41, 53, 40, 18, 44, 38, 41,
+          48, 27, 39, 19, 30, 61, 54, 58, 26, 18)
+
+print(ages)
+```
+
+```{r}
+# b. How many data points?
+num_points <- NROW(ages)
+num_points
+```
+
+```{r}
+# c. Find the minimum and the maximum value of worker's age.
+
+age_range <- range(ages)
+
+age_range[1]   # minimum
+age_range[2]   # maximum
+```
+
+```{r}
+# d. Access the 13rd to 18th elements and 33th to 35th elements of worker's Age.
+ages[c(seq(13, 18), seq(33, 35))]
+```
+
+```{r}
+# e. Access all but the 10th, 20th, 30th and 40th elements are not included.
+ages[-seq(10, 40, by = 10)]
+```
+
+```{r}
+# f. Modify the 4th, 14th, 24th, and 44th elements with value = 0.
+
+ages[c(4, 14, 24, 44)] <- rep(0, 4)
+ages
+```
+
+# Question #2:
+```{r}
+# R has actually lots of built-in datasets.
+# For example, the rivers data "gives the lengths (in miles) of 141 "major" rivers in North America, as compiled by the US Geological Survey".
+# Use data(rivers)
+
+# a. Get the number of elements (length) in rivers, their sum (sum), mean (mean), median(median), variance(var), standard deviation(sd), minimum (min) and maximum (max).
+
+data("rivers")
+
+cat("Length:", length(rivers), "\n")
+cat("Sum:", sum(rivers), "\n")
+cat("Mean:", mean(rivers), "\n")
+cat("Median:", median(rivers), "\n")
+cat("Variance:", var(rivers), "\n")
+cat("Std. Deviation:", sd(rivers), "\n")
+cat("Minimum:", min(rivers), "\n")
+cat("Maximum:", max(rivers), "\n")
+```
+
+```{r}
+# b. What is the result? The derived result must be in just one(1) vector name.
+
+rivers_summary <- c(
+  n = length(rivers),
+  total = sum(rivers),
+  average = mean(rivers),
+  middle = median(rivers),
+  var = var(rivers),
+  sd = sd(rivers),
+  smallest = min(rivers),
+  largest = max(rivers)
+)
+rivers_summary
+```
+
+# Question #3:
+```{r}
+# The table below gives the 25 most powerful celebrities and their annual pay as ranked by the editions of Forbes magazine and as listed on the Forbes.com website.
+
+# a. Create vectors according to the above table.
+
+rank <- seq_len(25)
+
+name <- c(
+  "Tom Cruise", "Rolling Stones", "Oprah Winfrey", "U2", "Tiger Woods",
+  "Steven Spielberg", "Howard Stern", "50 Cent", "Cast of the Sopranos", "Dan Brown",
+  "Bruce Springsteen", "Donald Trump", "Muhammad Ali", "Paul McCartney", "George Lucas",
+  "Elton John", "David Letterman", "Phil Mickelson", "J.K Rowling", "Bradd Pitt",
+  "Peter Jackson", "Dr. Phil McGraw", "Jay Lenon", "Celine Dion", "Kobe Bryant"
+)
+
+annual_pay <- c(
+  67, 90, 225, 110, 90,
+  332, 302, 41, 52, 88,
+  55, 44, 55, 40, 233,
+  34, 40, 47, 75, 25,
+  39, 45, 32, 40, 31
+)
+
+rank
+name
+annual_pay
+```
+
+```{r}
+# b. Modify the power ranking and pay of J.K. Rowling. Change power ranking to 15 and pay to 90.
+
+idx <- match("J.K Rowling", name)
+
+rank[idx] <- 15
+annual_pay[idx] <- 90
+
+data.frame(rank, name, annual_pay)[idx, ]
+```
+
+# Question #4:
+```{r}
+# Create a list of ten (10) vegetables you ate during your lifetime. If none, just list down the vegetables in your mind.
+
+veggies <- c("Squash", "Okra", "Bitter Gourd", "String Beans", "Onion",
+             "Garlic", "Sweet Potato", "Bell Pepper", "Mustard Greens", "Corn")
+
+veggies
+```
+
+```{r}
+# a. Add 2 additional vegetables after the last vegetables in the list. What is the result?
+veggies <- c(veggies, "Cauliflower", "Asparagus")
+
+veggies
+```
+
+```{r}
+# b. How many datapoints do you have?
+length(veggies)
+```
+
+```{r}
+# c. Add 4 additional vegetables after index 5. What is the result?
+new_veggies <- c("Leeks", "Turnip", "Bok Choy", "Green Peas")
+
+veggies <- c(veggies[1:5], new_veggies, veggies[6:length(veggies)])
+veggies
+```
+
+```{r}
+# d. How many datapoints does your vegetable list have?
+length(veggies)
+```
