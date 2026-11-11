@@ -408,7 +408,7 @@ dim(shoesize)</code></pre>
 <pre class="r"><code>ncol(shoesize)</code></pre>
 <pre><code>## [1] 3</code></pre>
 <pre class="r"><code># Answer:
-# There are 28 rows and 3 columns.</code></pre>
+# The dataset contains 28 rows, one for each respondent, and 3 columns: Shoe_size, Height, and Gender.</code></pre>
 <pre class="r"><code># e. Inspect by using summary() . What is the difference of the summary() from str() function?
 
 summary(shoesize)</code></pre>
@@ -420,7 +420,8 @@ summary(shoesize)</code></pre>
 ##  3rd Qu.:10.500   3rd Qu.:71.25   Max.nchar: 1  
 ##  Max.   :13.000   Max.   :77.00</code></pre>
 <pre class="r"><code># Explanation:
-# str() shows the overall structure like data types and preview values, while summary() gives summary statistics like min, mean, median, and max for numeric columns.</code></pre>
+# The str() function is about the layout of the data. It lists each column, the type of data it holds, and the first few values.
+# The summary() function is about the numbers inside it. It gives the minimum, 1st quartile, median, mean, 3rd quartile, and maximum of the numeric columns.</code></pre>
 <pre class="r"><code># f. Create a subset by males and females with their corresponding shoe size and height. What its result? Show the R scripts.
 
 males &lt;- subset(shoesize, Gender == &quot;M&quot;)
@@ -459,7 +460,7 @@ males</code></pre>
 ## 21       7.5   64.0      F
 ## 24       8.5   69.0      F</code></pre>
 <pre class="r"><code># Answer:
-# It creates two separate data frames: one for males with 14 rows and one for females with 14 rows, each listing their shoe size and height.</code></pre>
+# The result is two new data frames, males and females, each with 14 rows. They hold the same shoe size and height columns, but each one only includes the respondents of that gender.</code></pre>
 <pre class="r"><code># g. Find the mean of shoe size and height of the respondents. Write the R scripts and its result.
 
 mean(shoesize$Shoe_size)</code></pre>
@@ -469,7 +470,7 @@ mean(shoesize$Shoe_size)</code></pre>
 <pre class="r"><code># h. Is there a relationship between shoe size and height? Why?
 
 # Explanation:
-# Yes, there is a positive relationship between shoe size and height. Taller people generally have larger feet to support their height, so shoe size tends to increase as height increases.</code></pre>
+# Yes, there is a positive relationship. People who are taller tend to wear larger shoes, because body height and foot length grow together. The reverse also holds: shorter people usually have smaller shoe sizes.</code></pre>
 </div>
 <div id="question-2" class="section level1">
 <h1>Question #2:</h1>
@@ -485,7 +486,7 @@ str(shoesize$Gender)</code></pre>
 <pre class="r"><code># When R Markdown knits a document, it uses the folder containing the .Rmd file as the working directory — NOT whatever folder your R console happened to be in beforehand. Why do you think this design choice makes an .Rmd file&#39;s imports more reliable and reproducible when shared with someone else?
 
 # Explanation:
-# It forces R to look for files relative to where the .Rmd file is saved. This means if you share the project folder with someone else, their R Markdown will find the imported datasets (like shoesize.csv) without failing due to different absolute file paths on another computer.</code></pre>
+# Using the .Rmd file&#39;s own folder as the starting point means the code does not rely on a specific location on the author&#39;s computer. If the .Rmd and shoesize.csv are sent together, the file will be found no matter where the other person saves the folder. Otherwise, a hard-coded path like C:/Users/... would fail on any other computer, and the results could not be reproduced.</code></pre>
 </div>
 <div id="question-4" class="section level1">
 <h1>Question #4:</h1>
@@ -497,16 +498,16 @@ str(shoesize)</code></pre>
 ##  $ Height   : num  66 68 64.5 65 70 64 70 71 72 64 ...
 ##  $ Gender   : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 2 1 1 1 2 1 ...</code></pre>
 <pre class="r"><code># Explanation:
-# Gender was assigned as character/factor, which is expected since it contains text labels (&quot;M&quot; and &quot;F&quot;).
-# If a numeric column like Shoe_size gets imported as character, R will treat the numbers as plain text. You won&#39;t be able to do math operations like mean() or sum(), and it will cause errors or return NA when calculating summary statistics.</code></pre>
+# Yes, it matches what I expected. Gender is made up of the letters &quot;M&quot; and &quot;F&quot;, so R reads it as text (character) data rather than numbers.
+# If Shoe_size were accidentally imported as text, R would no longer see the values as numbers. Calculations like mean(), sum(), and cor() would produce errors or NA, and plots or comparisons would behave incorrectly. Even one stray non-numeric entry in the file is enough to turn the whole column into text.</code></pre>
 </div>
 <div id="question-5" class="section level1">
 <h1>Question #5:</h1>
 <pre class="r"><code># Why is it good practice to check BOTH head(shoes) and tail(shoes) after importing a file, instead of just head()? What kind of import problem would head() alone fail to catch?
 
 # Explanation:
-# head() only shows the first 6 rows, so it cannot catch issues at the bottom of the dataset. 
-# Using tail() helps catch problems like trailing blank rows, extra summary/total rows left in from Excel, or incomplete/corrupted data at the end of the file that head() would completely miss.</code></pre>
+# head() only lets you see the top of the data, so it says nothing about how the file ends. Using tail() too lets you confirm that the import is clean from the first row to the last.
+# A problem that head() alone would not catch is junk at the end of the file, such as blank rows, a totals row copied from Excel, footnotes, or a last row that was cut off or incomplete.</code></pre>
 </div>
 <div id="question-6" class="section level1">
 <h1>Question #6:</h1>
@@ -537,8 +538,8 @@ shoesize[shoesize$Shoe_size &gt;= 11, ]</code></pre>
 # - Does this dataset support the idea that shoe size and height are related WITHIN each gender group, or could gender itself be an important factor you&#39;d need to account for separately when studying that relationship?
 
 # Explanation:
-# Males have a noticeably higher average height (around 71.46 in) and larger average shoe size (10.96) compared to females (65.68 in height and 7.86 shoe size). Taller groups naturally have larger shoe sizes.
-# The dataset shows that height and shoe size are positively related within each gender group (around 0.50 correlation for both). However, gender is an important factor to account for separately because males are generally taller and have bigger feet overall, which inflates the combined overall correlation to 0.78 when grouped together.</code></pre>
+# Males are taller and have bigger feet on average. Their mean height is around 71.46 in with a mean shoe size of 10.96, compared with 65.68 in and 7.86 for females. In both measures, the male group is higher, so a taller group also tends to have a larger shoe size.
+# The data also shows a positive relationship inside each gender group, with a correlation of about 0.50 for both males and females. But gender should still be accounted for separately. Because males are higher in both height and shoe size, combining the two groups pushes the overall correlation up to 0.78, which overstates how strong the relationship is within either group on its own.</code></pre>
 </div>
 
 
