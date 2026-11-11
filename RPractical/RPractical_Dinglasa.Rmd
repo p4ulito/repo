@@ -1,0 +1,257 @@
+---
+title: "RPractical_Dinglasa"
+author: "Paul Christian S. Dinglasa"
+date: "2026-11-11"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Part A: Basic Operations
+
+#A1
+```{r}
+v <- seq(5, 50, by = 5)
+print(length(v))
+print(sum(v))
+print(mean(v))
+```
+
+#A2
+```{r}
+w <- rep(c(1, 2, 3), times = 4)
+z <- rep(c(1, 2, 3), each = 4)
+print(w)
+print(z)
+```
+
+#A3
+```{r}
+print(17 %% 5)       
+print(17 %/% 5)      
+print(2^10)
+print(sqrt(144))
+print(round(pi, 3))
+```
+
+#A4
+```{r}
+a <- c(2, 4, 6, 8)
+b <- c(1, 3, 5, 7)
+print(a + b)
+print(a * b)
+print(a > b)
+print(sum(a * b))
+```
+
+#A5
+```{r}
+print(paste("Student", 1:3, sep = "-"))
+
+# Datatypes
+print(class(42))     # numeric
+print(class(42L))    # integer
+print(class(as.character(42)))  # character  ("42")
+print(class(41i))    # complex
+print(class(TRUE))   # logical
+print(class("42"))   # character
+```
+
+#Part B: Data Frames and Conditional Statements
+
+#B1
+```{r}
+students <- data.frame(
+  id         = 1:8,
+  name       = c("Alice", "Bruno", "Chen", "Dana", "Elif", "Farid", "Grace", "Hiro"),
+  sex        = c("F", "M", "M", "F", "F", "M", "F", "M"),
+  section    = c("A", "B", "A", "C", "B", "C", "A", "B"),
+  midterm    = c(78, 85, 92, 67, 74, 88, 95, 59),
+  final      = c(82, 79, 96, 71, 80, 91, 93, 65),
+  attendance = c(95, 88, 100, 72, 90, 85, 98, 60),
+  stringsAsFactors = FALSE
+)
+print(students)
+```
+
+#B2
+```{r}
+str(students)
+print(dim(students))
+print(colnames(students))
+print(summary(students))
+```
+
+#B3
+```{r}
+students$average <- (students$midterm + students$final) / 2
+print(students)
+```
+
+#B4
+```{r}
+students$passed <- students$average >= 70 & students$attendance >= 75
+print(students)
+```
+
+#B5
+```{r}
+students$standing <- ifelse(students$average >= 90, "Honors",
+                     ifelse(students$average >= 75, "Good", "Needs Support"))
+print(students)
+```
+
+#B6
+```{r}
+classify <- function(score) {
+  if (score >= 85) {
+    "Distinction"
+  } else if (score >= 70) {
+    "Merit"
+  } else if (score >= 50) {
+    "Pass"
+  } else {
+    "Fail"
+  }
+}
+print(sapply(c(90, 73, 55, 40), classify))
+```
+
+#Part C: rbind() and cbind()
+
+#C1
+```{r}
+new_students <- data.frame(
+  id         = c(9, 10),
+  name       = c("Ines", "Jamal"),
+  sex        = c("F", "M"),
+  section    = c("C", "A"),
+  midterm    = c(81, 70),
+  final      = c(84, 68),
+  attendance = c(92, 80),
+  stringsAsFactors = FALSE
+)
+new_students$average  <- (new_students$midterm + new_students$final) / 2
+new_students$passed   <- new_students$average >= 70 & new_students$attendance >= 75
+new_students$standing <- ifelse(new_students$average >= 90, "Honors",
+                         ifelse(new_students$average >= 75, "Good", "Needs Support"))
+
+students_all <- rbind(students, new_students)
+print(students_all)
+```
+
+#C2
+```{r}
+quiz <- c(8, 7, 10, 6, 7, 9, 10, 5, 8, 6)
+students_all <- cbind(students_all, quiz = quiz)
+print(students_all)
+print(class(students_all))
+```
+
+#C3
+```{r}
+m <- cbind(midterm = students_all$midterm, final = students_all$final)
+m <- rbind(m, mean = colMeans(m))
+print(m)
+```
+
+#C4
+```{r}
+# rbind() on data frames requires matching column names. If the names differ,
+# it stops with the error "names do not match previous names". tryCatch()
+# lets us catch that error, print the message, and continue without crashing.
+bad <- students
+names(bad)[2] <- "student_name"   # a different column name
+
+tryCatch(rbind(students, bad),
+         error = function(e) {
+           message("rbind failed: ", conditionMessage(e))
+           NULL
+         })
+```
+
+#Part D: Extracting and Subsetting
+
+#D1
+```{r}
+print(students_all$name)
+print(students_all[["name"]])
+print(students_all[, "name"])
+```
+
+#D2
+```{r}
+print(students_all[2:5, c("name", "midterm", "final")])
+```
+
+#D3
+```{r}
+print(students_all[students_all$attendance > 90, ])
+```
+
+#D4
+```{r}
+print(subset(students_all,
+             sex == "F" & section %in% c("A", "C") & final >= 75,
+             select = c(name, section, final)))
+```
+
+#D5
+```{r}
+print(students_all$name[which.max(students_all$average)])  # highest
+print(students_all$name[which.min(students_all$average)])  # lowest
+```
+
+#D6
+```{r}
+sorted <- students_all[order(students_all$average, decreasing = TRUE), ]
+print(head(sorted, 3))
+```
+
+#Part E: Basic Factors
+
+#E1
+```{r}
+students_all$section <- factor(students_all$section)
+students_all$sex     <- factor(students_all$sex)
+print(levels(students_all$section))
+print(levels(students_all$sex))
+```
+
+#E2
+```{r}
+print(table(students_all$sex))
+print(table(students_all$section))
+# Two-way table: rows = sex, columns = section
+print(table(students_all$sex, students_all$section))
+```
+
+#E3
+```{r}
+print(as.integer(students_all$sex))
+# The integers are the internal codes of the factor levels. Levels are sorted
+# alphabetically, so F = 1 and M = 2.
+```
+
+#E4
+```{r}
+students_all$sex_label <- factor(students_all$sex,
+                                 levels = c("F", "M"),
+                                 labels = c("Female", "Male"))
+print(levels(students_all$sex_label))
+```
+
+#E5
+```{r}
+print(summary(students_all$sex_label))
+
+print(mean(students_all$average[students_all$sex_label == "Female"]))
+print(mean(students_all$average[students_all$sex_label == "Male"]))
+```
+
+
+
