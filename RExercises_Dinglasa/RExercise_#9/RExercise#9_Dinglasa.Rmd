@@ -1,0 +1,172 @@
+---
+title: "RExercise#9_Dinglasa.Rmd"
+author: "Paul Christian S. Dinglasa"
+date: "2026-11-11"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Part A — Creating Data Frames
+
+# Question #1
+```{r}
+# a. The table below shows the data about shoe size and height. Create a data frame. Save it as shoesize.csv
+
+shoesize_data <- data.frame(
+  Shoe_size = c(6.5, 9.0, 8.5, 8.5, 10.5, 7.0, 9.5, 9.0, 13.0, 7.5, 10.5, 8.5, 12.0, 10.5,
+                13.0, 11.5, 8.5, 5.0, 10.0, 6.5, 7.5, 8.5, 10.5, 8.5, 10.5, 11.0, 9.0, 13.0),
+  Height = c(66.0, 68.0, 64.5, 65.0, 70.0, 64.0, 70.0, 71.0, 72.0, 64.0, 74.5, 67.0, 71.0, 71.0,
+             77.0, 72.0, 59.0, 62.0, 72.0, 66.0, 64.0, 67.0, 73.0, 69.0, 72.0, 70.0, 69.0, 70.0),
+  Gender = c("F", "F", "F", "F", "M", "F", "F", "F", "M", "F", "M", "F", "M", "M",
+             "M", "M", "F", "F", "M", "F", "F", "M", "M", "F", "M", "M", "M", "M")
+)
+
+write.csv(shoesize_data, "shoesize.csv", row.names = FALSE)
+
+```
+
+```{r}
+# b. Then try to import the saved csv into the R environment. Display the last 5 rows.
+
+shoesize <- read.csv("shoesize.csv")
+tail(shoesize, 5)
+
+```
+
+```{r}
+# c. Describe the data by showing the structures and its content.
+
+str(shoesize)
+head(shoesize)
+
+```
+
+```{r}
+# d. Inspect its dimensions. How many rows? How about columns?
+
+dim(shoesize)
+nrow(shoesize)
+ncol(shoesize)
+
+# Answer:
+# There are 28 rows and 3 columns.
+```
+
+```{r}
+# e. Inspect by using summary() . What is the difference of the summary() from str() function?
+
+summary(shoesize)
+
+# Explanation:
+# str() shows the overall structure like data types and preview values, while summary() gives summary statistics like min, mean, median, and max for numeric columns.
+
+```
+
+```{r}
+# f. Create a subset by males and females with their corresponding shoe size and height. What its result? Show the R scripts.
+
+males <- subset(shoesize, Gender == "M")
+females <- subset(shoesize, Gender == "F")
+
+males
+females
+
+# Answer:
+# It creates two separate data frames: one for males with 14 rows and one for females with 14 rows, each listing their shoe size and height.
+
+```
+
+```{r}
+# g. Find the mean of shoe size and height of the respondents. Write the R scripts and its result.
+
+mean(shoesize$Shoe_size)
+mean(shoesize$Height)
+
+```
+
+```{r}
+# h. Is there a relationship between shoe size and height? Why?
+
+# Explanation:
+# Yes, there is a positive relationship between shoe size and height. Taller people generally have larger feet to support their height, so shoe size tends to increase as height increases.
+
+```
+
+# Question #2:
+```{r}
+# A nominal variable is a categorical variable without an implied order. This means that it is impossible to say that 'one is worth more than the other'.
+# Create factors for the gender.
+
+shoesize$Gender <- factor(shoesize$Gender)
+str(shoesize$Gender)
+
+```
+
+# Question #3:
+```{r}
+# When R Markdown knits a document, it uses the folder containing the .Rmd file as the working directory — NOT whatever folder your R console happened to be in beforehand. Why do you think this design choice makes an .Rmd file's imports more reliable and reproducible when shared with someone else?
+
+# Explanation:
+# It forces R to look for files relative to where the .Rmd file is saved. This means if you share the project folder with someone else, their R Markdown will find the imported datasets (like shoesize.csv) without failing due to different absolute file paths on another computer.
+
+```
+
+# Question #4:
+```{r}
+# Run str(shoes) and note the type R assigned to the Gender column. Is it what you expected? Explain what could go wrong in later analysis if a column you expected to be numeric (like ShoeSize) was accidentally imported as text (character) instead — for example, because of a stray non-numeric value in the original file.
+
+str(shoesize)
+
+# Explanation:
+# Gender was assigned as character/factor, which is expected since it contains text labels ("M" and "F").
+# If a numeric column like Shoe_size gets imported as character, R will treat the numbers as plain text. You won't be able to do math operations like mean() or sum(), and it will cause errors or return NA when calculating summary statistics.
+
+```
+
+# Question #5:
+```{r}
+# Why is it good practice to check BOTH head(shoes) and tail(shoes) after importing a file, instead of just head()? What kind of import problem would head() alone fail to catch?
+
+# Explanation:
+# head() only shows the first 6 rows, so it cannot catch issues at the bottom of the dataset. 
+# Using tail() helps catch problems like trailing blank rows, extra summary/total rows left in from Excel, or incomplete/corrupted data at the end of the file that head() would completely miss.
+
+```
+
+# Question #6:
+```{r}
+# a. Compute for the correlation
+
+# TODO: Use cor(shoes$ShoeSize, shoes$Height) to compute the correlation
+# between shoe size and height across ALL observations
+
+cor(shoesize$Shoe_size, shoesize$Height)
+
+```
+
+
+```{r}
+# b.
+
+# TODO: Return all rows where ShoeSize is greater than or equal to 11,
+# regardless of gender
+
+shoesize[shoesize$Shoe_size >= 11, ]
+
+```
+
+# Question #7:
+```{r}
+# - Compare the mean height and mean shoe size between the female and male subsets. Describe the pattern you see.
+# - Does this dataset support the idea that shoe size and height are related WITHIN each gender group, or could gender itself be an important factor you'd need to account for separately when studying that relationship?
+
+# Explanation:
+# Males have a noticeably higher average height (around 71.46 in) and larger average shoe size (10.96) compared to females (65.68 in height and 7.86 shoe size). Taller groups naturally have larger shoe sizes.
+# The dataset shows that height and shoe size are positively related within each gender group (around 0.50 correlation for both). However, gender is an important factor to account for separately because males are generally taller and have bigger feet overall, which inflates the combined overall correlation to 0.78 when grouped together.
+
+```
