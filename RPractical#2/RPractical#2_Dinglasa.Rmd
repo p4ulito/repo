@@ -3,8 +3,8 @@ title: "RPractical#2_Dinglasa"
 author: "Paul Christian S. Dinglasa"
 date: "2026-11-18"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
