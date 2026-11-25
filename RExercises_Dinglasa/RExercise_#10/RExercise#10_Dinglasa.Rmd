@@ -1,0 +1,169 @@
+---
+title: "RExercise#10_Dinglasa.Rmd"
+author: "Paul Christian S. Dinglasa"
+date: "2026-11-25"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Part A — Predict the Output
+
+#Question #1
+
+```{r q1}
+m <- matrix(1:6, nrow = 2)
+m
+
+a <- apply(m, 1, sum);  a
+b <- apply(m, 2, sum);  b
+c_ <- class(lapply(1:3, function(i) i^2)); c_
+d <- sapply(1:3, function(i) i^2); d
+e <- sapply(c('a', 'bb', 'ccc'), nchar); e
+f <- mapply(function(x, y) x * y, 1:3, 4:6); f
+g <- tapply(c(10, 20, 30, 40), c('u', 'v', 'u', 'v'), sum); g
+```
+
+a) `apply(m, 1, sum)` returns `9 12`. MARGIN = 1 works across rows: row 1 is 1+3+5 = 9 and row 2 is 2+4+6 = 12.
+
+b) `apply(m, 2, sum)` returns `3 7 11`. MARGIN = 2 works down columns: 1+2, 3+4, and 5+6.
+
+c) `"list"`. `lapply()` always returns a list, even when every element is a single number.
+
+d) `1 4 9`. `sapply()` squares each value and simplifies the list into a numeric vector.
+
+e) A named integer vector, `a = 1, bb = 2, ccc = 3`. `nchar` counts characters, and because the input is a character vector, `sapply()` uses the strings as names.
+
+f) `4 10 18`. `mapply()` walks through both vectors in parallel: 1*4, 2*5, 3*6.
+
+g) A named vector, `u = 40, v = 60`. `tapply()` groups the values by the labels, so u gets 10+30 and v gets 20+40.
+
+#Question #2
+
+```{r q2-data}
+scores <- matrix(c(70, 85, 90,
+                   60, 75, 80,
+                   88, 92, 79),
+                 nrow = 3, byrow = TRUE,
+                 dimnames = list(c('Ana', 'Ben', 'Cara'), c('Math', 'Sci', 'Eng')))
+
+temps <- list(Mon = c(30, 32, 31), Tue = c(29, 33), Wed = c(31, 34, 35, 30))
+```
+
+###b.1
+
+```{r q2-b1}
+# (a) each student's average (rows)
+apply(scores, 1, mean)
+
+# (b) each subject's highest score (columns)
+apply(scores, 2, max)
+
+# (c) name of the best subject for each student
+apply(scores, 1, function(row) names(row)[which.max(row)])
+```
+
+Students are in rows, so I use MARGIN = 1 for per-student results (a, c) and MARGIN = 2 for per-subject results (b). Ana averages about 81.7, Ben about 71.7, and Cara about 86.3. The highest scores are Math 88, Sci 92, and Eng 90. Ana's and Ben's best subject is Eng, and Cara's is Sci.
+
+###b.2
+
+```{r q2-b2}
+# lapply: mean (returns a list)
+lapply(temps, mean)
+
+# sapply: number of readings (returns a named vector)
+sapply(temps, length)
+
+# vapply: range (each result must be a numeric vector of length 2)
+vapply(temps, range, FUN.VALUE = numeric(2))
+```
+
+The means are Mon 31, Tue 31, Wed 32.5, and the numbers of readings are 3, 2, and 4. The range result is a matrix because `range()` returns two values (min and max) for every day. Since every day returns the same length (2), `vapply()` (and `sapply()`) stack them as columns of a 2 x 3 matrix, with one column per day and the rows holding the minimum and maximum.
+
+## Question #3
+
+```{r q3}
+p <- c(1000, 2000)
+r <- c(0.05, 0.04)
+n <- c(2, 3)
+
+mapply(function(p, r, n) p * (1 + r)^n, p, r, n)
+
+mapply(function(p, n, r) p * (1 + r)^n, p, n, MoreArgs = list(r = 0.045))
+```
+
+With individual rates the final amounts are 1102.50 and 2249.73. When the rate is fixed at 4.5%, the amounts become 1092.03 and 2282.33. `MoreArgs` passes a single value that is reused for every call instead of being looped over in parallel.
+
+#Question #4
+
+```{r q4}
+# (a) Mean Sepal.Length per species
+tapply(iris$Sepal.Length, iris$Species, mean)
+
+# (b) Number of cars for each combination of cyl and am
+tapply(mtcars$mpg, list(cyl = mtcars$cyl, am = mtcars$am), length)
+
+# (c) Mean mpg per cyl, ignoring missing values
+tapply(mtcars$mpg, mtcars$cyl, mean, na.rm = TRUE)
+```
+
+Mean sepal length is about 5.01 for setosa, 5.94 for versicolor, and 6.59 for virginica. The cyl by am table shows, for example, 12 cars with 8 cylinders and automatic transmission (am = 0) but only 2 with manual (am = 1). Mean mpg falls as cylinders increase: about 26.7 (4 cyl), 19.7 (6 cyl), and 15.1 (8 cyl). Extra arguments such as `na.rm = TRUE` are passed through to `mean()`.
+
+###Part A — Debugging
+
+#Question #5
+
+### 1.
+
+```{r q5-1, eval=FALSE}
+sapply(list(a = 1:3, b = 4:6), mean())   # error
+```
+
+`mean()` is *called* with no arguments instead of passing the function itself; it should be `mean` without parentheses.
+
+```{r q5-1-fix}
+sapply(list(a = 1:3, b = 4:6), mean)
+```
+
+### 2.
+
+```{r q5-2-bug}
+apply(matrix(1:6, nrow = 3), 1, mean)   # gives 3 numbers (row means)
+```
+
+MARGIN = 1 averages across rows (three values); column means need MARGIN = 2.
+
+```{r q5-2-fix}
+apply(matrix(1:6, nrow = 3), 2, mean)
+```
+
+### 3.
+
+```{r q5-3-bug}
+df <- data.frame(n = c(1, 2), s = c('a', 'b'))
+apply(df, 2, class)   # both "character"
+```
+
+`apply()` first converts the data frame to a matrix, which forces everything to character, so every column reports `"character"`. Use `sapply()` (or `lapply()`) on the columns instead.
+
+```{r q5-3-fix}
+sapply(df, class)
+```
+
+#Question #6
+
+**1.** `lapply()` always returns a list with one element per input element. `sapply()` is a wrapper around `lapply()` that tries to simplify that list into a vector or matrix when the results have the same length. I would choose `vapply()` when I want the safe version of `sapply()`: it requires me to declare the type and length of each result (`FUN.VALUE`), so it errors if something unexpected comes back and always returns a predictable type, even for empty input. This makes it better for use inside functions and packages.
+
+**2.** `tapply(x, g, mean)` gives the same group means in one call. It returns a named 1-D array (which behaves like a named vector) with one mean per group, rather than a list.
+
+```{r q6}
+x <- c(10, 20, 30, 40)
+g <- c('u', 'v', 'u', 'v')
+
+lapply(split(x, g), mean)   
+tapply(x, g, mean)          
+```
